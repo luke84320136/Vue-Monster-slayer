@@ -3,7 +3,8 @@ new Vue({
   data: {
     playerHealth: 100,
     monsterHealth: 100,
-    gameIsRunning: false
+    gameIsRunning: false,
+    turns: []
   },
   methods: {
     startGame: function() {
@@ -12,7 +13,12 @@ new Vue({
       this.monsterHealth = 100
     },
     attack: function() {
-      this.monsterHealth -= this.calculateDamage(2, 10)
+      var damage = this.calculateDamage(2, 10)
+      this.monsterHealth -= damage
+      this.turns.unshift({
+        isPlayer: true,
+        text: '小蝦米攻擊魔王' + damage + '生命值'
+      })
       if (this.checkWin()) {
         return
       }
@@ -25,10 +31,24 @@ new Vue({
       }
       this.monsterAttacks()
     },
-    heal: function() {},
-    giveUp: function() {},
+    heal: function() {
+      if(this.playerHealth <= 90) {
+        this.playerHealth += 10
+      } else {
+        this.playerHealth = 100
+      }
+      this.monsterAttacks()
+    },
+    giveUp: function() {
+      this.gameIsRunning = false
+    },
     monsterAttacks: function() {
-      this.playerHealth -= this.calculateDamage(5, 15)
+      var damage = this.calculateDamage(5, 15)
+      this.playerHealth -= damage
+      this.turns.unshift({
+        isPlayer: false,
+        text: '魔王攻擊小蝦米' + damage + '生命值'
+      })
       this.checkWin()
     },
     calculateDamage: function(min, max) {
