@@ -11,13 +11,14 @@ new Vue({
       this.gameIsRunning = true
       this.playerHealth = 100
       this.monsterHealth = 100
+      this.turns = []
     },
     attack: function() {
       var damage = this.calculateDamage(2, 10)
       this.monsterHealth -= damage
       this.turns.unshift({
         isPlayer: true,
-        text: '小蝦米攻擊魔王' + damage + '生命值'
+        text: "小蝦米攻擊魔王" + damage + "生命值"
       })
       if (this.checkWin()) {
         return
@@ -25,18 +26,27 @@ new Vue({
       this.monsterAttacks()
     },
     specialAttack: function() {
-      this.monsterHealth -= this.calculateDamage(7, 22)
+      var damage = this.calculateDamage(7, 22)
+      this.monsterHealth -= damage
+      this.turns.unshift({
+        isPlayer: true,
+        text: "小蝦米用特殊技能攻擊魔王" + damage + "生命值"
+      })
       if (this.checkWin()) {
         return
       }
       this.monsterAttacks()
     },
     heal: function() {
-      if(this.playerHealth <= 90) {
+      if (this.playerHealth <= 90) {
         this.playerHealth += 10
       } else {
         this.playerHealth = 100
       }
+      this.turns.unshift({
+        isPlayer: true,
+        text: "小蝦米補血10生命值"
+      })
       this.monsterAttacks()
     },
     giveUp: function() {
@@ -47,7 +57,7 @@ new Vue({
       this.playerHealth -= damage
       this.turns.unshift({
         isPlayer: false,
-        text: '魔王攻擊小蝦米' + damage + '生命值'
+        text: "魔王攻擊小蝦米" + damage + "生命值"
       })
       this.checkWin()
     },
